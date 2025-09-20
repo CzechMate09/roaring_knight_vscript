@@ -21,6 +21,7 @@ function attack_under_box_attack()
 			spawn_count = 10
 			interval = 1.3
 		}
+
 		if (Boss_difficulty == "extreme")
 		{
 			spawn_count = 20
@@ -74,9 +75,7 @@ function start_attack_under_box_attack(spawn_count, interval, on_finish = null)
 				}
 
 				if (startswith(targetname, "hurt_attack_underboxattack"))
-				{
 					EntFireByHandle(handle, "Enable", "", delay, null, null)
-				}
 
 				if (startswith(targetname, "sprite_attack_underboxattack"))
 				{
@@ -97,9 +96,8 @@ function start_attack_under_box_attack(spawn_count, interval, on_finish = null)
 		template.AcceptInput("ForceSpawn", "", null, null)
 	}
 
-	for (local i = 0; i < spawn_count; i++) {
+	for (local i = 0; i < spawn_count; i++)
 		Schedule(i * interval, spawnt_template)
-	}
 
 	if (on_finish != null)
 		Schedule(spawn_count * interval, on_finish)

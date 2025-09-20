@@ -7,13 +7,16 @@ CollectEventsInScope
 		local inflictor = params.inflictor // entity that dealt the damage (example: Sentry Gun)
 		local attacker = params.attacker // owner of the damage (example: Engineer of the Sentry Gun)
 
-		if (entity.GetClassname() == "obj_dispenser" || entity.GetClassname() == "obj_sentrygun" || entity.GetClassname() == "obj_teleporter")
+		if (entity.GetClassname() == "obj_dispenser" ||
+			entity.GetClassname() == "obj_sentrygun" ||
+			entity.GetClassname() == "obj_teleporter")
 		{
 			local reduced_damage = damage_recieved * 0.6 // 40% damage resistance
 			params.damage = reduced_damage
 		}
 
-		if (entity.IsPlayer()) {
+		if (entity.IsPlayer())
+		{
 			local factor = 1.0 // Make resistances stackable
 
 			local player = entity
@@ -84,7 +87,8 @@ CollectEventsInScope
 				factor *= 0.90 // 10% damage resistance
 			}
 
-			if (damage_recieved * factor > entity.GetHealth() && (entity.GetPlayerClass() == TF_CLASS_DEMOMAN || entity.GetPlayerClass() == TF_CLASS_SNIPER))
+			if (damage_recieved * factor > entity.GetHealth() &&
+				(entity.GetPlayerClass() == TF_CLASS_DEMOMAN || entity.GetPlayerClass() == TF_CLASS_SNIPER))
 			{
 				for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
 				{
@@ -105,7 +109,10 @@ CollectEventsInScope
 			params.damage = damage_recieved * factor
 		}
 
-		if (entity.GetClassname() == "base_boss" && attacker.IsPlayer()) // I cant't tell if the damage came from a sentry in npc_hurt event
+		// I cant't tell if the damage came from a sentry in npc_hurt event
+		if (entity.GetClassname() == "base_boss" &&
+			attacker.IsPlayer() &&
+			attacker.GetPlayerClass() == TF_CLASS_ENGINEER)
 		{
 			local scope = attacker.GetScriptScope()
 			scope.dmg_acc += damage_recieved

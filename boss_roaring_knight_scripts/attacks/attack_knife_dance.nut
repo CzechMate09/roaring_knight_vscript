@@ -21,7 +21,9 @@ function attack_knife_dance()
 		knife_dance_spawn_repeat(interval, duration)
 		Schedule(duration, R_knight_rand_attack)
 		knife_dance_used = true
-	} else {
+	}
+	else
+	{
 		printl("attack_knife_dance_extra")
 		knife_dance_spawn_repeat(interval, duration)
 		knife_dance_circle(duration)
@@ -89,11 +91,10 @@ function knife_dance_spawn()
 				handle.SetOrigin(target_pos + Vector(0, 0, 20))
 				local angle
 				if (angle_random == true)
-				{
 					angle = compass_angles[RandomInt(0, compass_angles.len() - 1)]
-				} else {
+				else
 					angle = compass_angles[angle_index % compass_angles.len()]
-				}
+
 				angle_index++
 
 				handle.SetAbsAngles(QAngle(0, angle, 0))
@@ -287,7 +288,9 @@ function CloseSwords(duration = 2.0, closed_distance = 512)
 					original_z // keep z unchanged
 				)
 				self.SetLocalOrigin(new_offset)
-			} else {
+			}
+			else
+			{
 				self.SetLocalOrigin(Vector(0, 0, original_z))
 			}
 

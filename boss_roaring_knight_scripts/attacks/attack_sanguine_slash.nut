@@ -22,7 +22,9 @@ function attack_sanguine_slash()
 			Schedule(1.0, sanguine_slash_end)
 		})
 		sanguine_slash_used = true
-	} else {
+	}
+	else
+	{
 		start_sanguine_slash(delay_between, function(){
 			knight_attack_go_to_start_origin = true
 			move_brush_random(Entities.FindByName(null, "brush_r_knight_attack"), 1.0)
@@ -44,11 +46,9 @@ function move_brush_random(brush, max_time)
 	brush.GetScriptScope().start_time <- Time()
 
 	if (knight_attack_go_to_start_origin == true)
-	{
 		brush.GetScriptScope().target_origin <- knight_attack_start_origin
-	} else {
+	else
 		brush.GetScriptScope().target_origin <- null
-	}
 
 	brush.GetScriptScope().max_time <- max_time
 	brush.GetScriptScope().start_origin <- knight_attack_start_origin
@@ -112,7 +112,8 @@ function start_sanguine_slash(delay_between = 2.2, on_finish = null)
 	if (knight_attack_start_origin == null)
 		knight_attack_start_origin <- brush_r_knight_attack.GetOrigin()
 
-	function spawn_template_at_index(idx) {
+	function spawn_template_at_index(idx)
+	{
 		local new_delay_between = delay_between - 0.2
 
 		local rand_x = Lerp(RandomFloat(0, 1), min_x, max_x)
@@ -140,13 +141,6 @@ function start_sanguine_slash(delay_between = 2.2, on_finish = null)
 			Entities.FindByName(null, "brush_sanguine_slash_4*")
 		]
 
-		local hurt = [
-			Entities.FindByName(null, "hurt_sanguine_slash_1*"),
-			Entities.FindByName(null, "hurt_sanguine_slash_2*"),
-			Entities.FindByName(null, "hurt_sanguine_slash_3*"),
-			Entities.FindByName(null, "hurt_sanguine_slash_4*")
-		]
-
 		Disable_All_Brushes()
 		Enable_Brush("brush_r_knight_attack")
 		Stop_r_knight_door_parent()
@@ -165,11 +159,13 @@ function start_sanguine_slash(delay_between = 2.2, on_finish = null)
 			Do_slash(new_delay_between / 2)
 		})
 
-		function Do_slash(duration){
+		function Do_slash(duration)
+		{
 			EntFireByHandle(rot, "Stop", "", 0.0, null, null)
-			EntFireByHandle(brushes[idx], "Color", "255 255 255", duration / 2, null, null)
+			EntFireByHandle(brushes[idx], "Enable", "", duration / 2, null, null)
 			EntFire("brush_sanguine_slash_top_*", "Disable", "", duration / 2, null)
-			EntFireByHandle(hurt[idx], "Enable", "", duration / 2, null, null)
+			EntFire("brush_sanguine_slash_bottom_*", "Disable", "", duration / 2, null)
+			EntFire("hurt_sanguine_slash_*", "Enable", "", duration / 2, null)
 			Schedule(duration / 2, SetTextureFrameIndex, [brush_r_knight_attack, 3])
 			Schedule(duration / 2, PlaySoundOnAllClients, ["chapter_3/audiogroup_default/snd_knight_cut.wav"])
 			Schedule(duration / 2, PlaySoundOnAllClients, ["chapter_3/audiogroup_default/snd_explosion_firework.wav"])
@@ -185,7 +181,8 @@ function start_sanguine_slash(delay_between = 2.2, on_finish = null)
 		multiplier = 3
 
 	local spawn_count = templates.len() * multiplier
-	for (local i = 0; i < spawn_count; i++) {
+	for (local i = 0; i < spawn_count; i++)
+	{
 		local idx = i / multiplier
 		Schedule(i * delay_between, spawn_template_at_index, [idx])
 	}
@@ -203,10 +200,9 @@ function do_slasher(slashes, on_finish = null)
 	local target_circle_center = Entities.FindByName(null, "target_circle_center")
 	local position = target_circle_center.GetOrigin()
 	local sanguine_slash_rot_1 = Entities.FindByName(null, "sanguine_slash_rot_1*")
-	local brush = Entities.FindByName(null, "brush_sanguine_slash_1*")
+	local brush = Entities.FindByName(null, "brush_sanguine_slash_bottom_1*")
 
 	sanguine_slash_rot_1.SetOrigin(position)
-	brush.AcceptInput("Enable", "", null, null)
 	sanguine_slash_rot_1.AcceptInput("Start", "", null, null)
 	local start_time = RandomFloat(1.5, 2.5)
 
@@ -221,14 +217,17 @@ function do_slasher(slashes, on_finish = null)
 	if (Boss_difficulty == "extreme")
 		EntFireByHandle(sanguine_slash_rot_1, "SetSpeed", "0.3", start_time, null, null)
 
-	function ColorFlashAndSound(brush, times, start_time, color_time) {
-		for (local i = 0; i < times; i++) {
+	function ColorFlashAndSound(brush, times, start_time, color_time)
+	{
+		for (local i = 0; i < times; i++)
+		{
 			local t = start_time + i * color_time
 			local brush_r_knight_flurry = Entities.FindByName(null, "brush_r_knight_flurry")
-			EntFireByHandle(brush, "Color", "255 255 255", t, null, null)
+			EntFire("brush_sanguine_slash_top_1*", "Disable", "", t, null)
+			EntFire("brush_sanguine_slash_bottom_1*", "Disable", "", t, null)
+			EntFire("brush_sanguine_slash_1*", "Enable", "", t, null)
 			Schedule(t, SetTextureFrameIndex, [brush_r_knight_flurry, i])
 			Schedule(t, PlaySoundOnAllClients, ["chapter_3/audiogroup_default/snd_knight_cut.wav"])
-			// EntFireByHandle(brush, "Color", "255 0 0", t + color_time/2, null, null) // Disabled due to epilepsy concerns
 		}
 
 		EntFireByHandle(sanguine_slash_rot_1, "Kill", "", start_time + times * color_time + color_time/2, null, null)

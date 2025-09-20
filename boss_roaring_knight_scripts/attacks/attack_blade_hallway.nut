@@ -5,9 +5,9 @@
 function attack_blade_hallway()
 {
 	Stop_r_knight_door_parent()
-	PlaySoundOnAllClients("chapter_3/audio_sfx/snd_smallswing.wav", 1.0, 100)
 	local brush_r_knight_point = Entities.FindByName(null, "brush_r_knight_point")
 	PlaySpriteAnimation(brush_r_knight_point, 0.2, 4, function() {
+		PlaySoundOnAllClients("chapter_3/audio_sfx/snd_smallswing.wav", 1.0, 100)
 		SetBossSolid(SOLID_NONE)
 		stop_afterimage()
 		Disable_All_Brushes()
@@ -36,21 +36,23 @@ function Start_blade_hallway()
 		}
 
 		Blade_hallway_spawn(loop_count, interval, Blade_hallway_spawn_end)
-	} else {
+	}
+	else
+	{
 		local total_time = 15.0
 		local rot_speed = 0.6
-		local train_speed = 0.6
+		local train_speed = 0.5
 
 		if (Boss_difficulty == "hard")
 		{
 			rot_speed = 0.7
-			train_speed = 0.8
+			train_speed = 0.6
 		}
 		
 		if (Boss_difficulty == "extreme")
 		{
 			rot_speed = 0.8
-			train_speed = 0.9
+			train_speed = 0.8
 		}
 		
 		Blade_hallway_spawn_rotating(rot_speed, train_speed, total_time, Blade_hallway_spawn_end)
@@ -146,11 +148,9 @@ function Blade_hallway_spawn_rotating(rot_speed, train_speed, total_time = 15.0,
 	Schedule(3.0, function(){
 		local rand_direction = RandomInt(0, 1)
 		if (rand_direction == 0)
-		{
 			EntFire("path_blade_hallway_round_*", "DisableAlternatePath", "", 0.0, null)
-		} else {
+		else
 			EntFire("path_blade_hallway_round_*", "EnableAlternatePath", "", 0.0, null)
-		}
 
 		train_blade_hallway_round.AcceptInput("StartForward", "", null, null)
 		train_blade_hallway_round.AcceptInput("SetSpeed", train_speed.tostring(), null, null)
@@ -255,14 +255,17 @@ function setup_blade_think()
 			local yaw_rad = angles.y * PI / 180.0
 			dir = Vector(cos(yaw_rad), sin(yaw_rad), 0)
 			projectile_blade_hallway.GetScriptScope().target_selected <- true
-		} else {
+		}
+		else
+		{
 			local max_dist = 2800
 			local target = players[RandomInt(0, players.len() - 1)]
 
 			local target_pos = target.GetOrigin()
 			dir = target_pos - my_pos
 			dir.z = 0
-			if (dir.Length() > max_dist) {
+			if (dir.Length() > max_dist)
+			{
 				projectile_blade_hallway.Destroy()
 				continue
 			}

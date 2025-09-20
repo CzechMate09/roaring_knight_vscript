@@ -14,14 +14,15 @@ function Anim_r_knight_sword_appear(on_finish = null, frame_rate = 8, frame_coun
 			Schedule(frame_delay * index, function() {
 				SetTextureFrameIndex(brush_r_knight_sword_appear, index)
 				if (index == 0)
-				{
 					r_knight_sword_brush.AcceptInput("Enable", "", null, null)
-				}
+
+
 				if (index == 8)
 				{
 					r_knight_sword_brush.AcceptInput("Disable", "", null, null)
 					stop_afterimage()
 				}
+
 				if (index == frame_count - 1)
 					if (on_finish != null) on_finish()
 			})

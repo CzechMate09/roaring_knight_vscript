@@ -32,7 +32,7 @@ function SetUpBossHealth()
 		base_health = 15500
 
 	if (Boss_difficulty == "extreme")
-		base_health = 16000
+		base_health = 16500
 
 	local red_players = GetAllRedPlayers()
 	foreach (player in red_players)

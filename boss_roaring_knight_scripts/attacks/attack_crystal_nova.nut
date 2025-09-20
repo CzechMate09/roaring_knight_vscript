@@ -75,12 +75,11 @@ function Spawn_nova_trains_phase_1(max_time = null)
 		if ((max_time != null && (Time() - start_time) >= max_time)) return
 
 		if (index > path_count)
-		{
 			index = 1
-		}
 
 		// Check if we need to switch direction at halfway
-		if (!halfway_switched && ((Time() - start_time) >= max_time/2)) {
+		if (!halfway_switched && ((Time() - start_time) >= max_time/2))
+		{
 			interval = 0.2
 			direction = -1 // Reverse direction
 			halfway_switched = true
@@ -108,9 +107,8 @@ function Spawn_nova_trains_phase_1(max_time = null)
 				}
 			}
 			template.GetScriptScope().PostSpawn <- function(entities) {
-				foreach(handle in entities) { 
+				foreach(handle in entities)
 					NetProps.SetPropBool(handle, "m_bForcePurgeFixedupStrings", true)
-				}
 			}
 			template.AcceptInput("ForceSpawn", "", null, null)
 		}
@@ -156,7 +154,7 @@ function nova_phase_2()
 	Schedule(2.0, function(){
 		Spawn_nova_trains_phase_2(6.0, function(){
 			Schedule(2.0, ReverseStarTrains, ["r_knight_star_train_nova_*", "sprite_star_projectile_nova_*"])
-			Schedule(2.0, CreateStarChildren, ["r_knight_star_train_nova_*", false])
+			Schedule(2.0, CreateStarChildren, ["r_knight_star_train_nova_*"])
 			local sprite_knight_front_flourish = Entities.FindByName(null, "sprite_knight_front_flourish")
 			sprite_knight_front_flourish.SetModel("roaring_knight/spr_roaringknight_front_flourish/spr_roaringknight_front_flourish.vmt")
 			PlaySpriteAnimationReversed(sprite_knight_front_flourish, 0.2, 6)
@@ -196,7 +194,8 @@ function Spawn_nova_trains_phase_2(max_time = null, on_complete = null)
 	{
 		if ((max_time != null && (Time() - start_time) >= max_time))
 		{
-			if (on_complete != null) on_complete()
+			if (on_complete != null)
+				on_complete()
 			return
 		}
 
@@ -213,9 +212,7 @@ function Spawn_nova_trains_phase_2(max_time = null, on_complete = null)
 					if (Boss_difficulty == "hard") speed = 400
 					if (Boss_difficulty == "extreme") speed = 450
 					if (i == 1) // 0=left, 1=middle, 2=right
-					{
 						speed = speed / 1.3
-					}
 
 					return { 
 						target = format("path_crystal_nova_%d_1", idx)
@@ -226,9 +223,7 @@ function Spawn_nova_trains_phase_2(max_time = null, on_complete = null)
 			}
 			template.GetScriptScope().PostSpawn <- function(entities) {
 				foreach(handle in entities)
-				{ 
 					NetProps.SetPropBool(handle, "m_bForcePurgeFixedupStrings", true)
-				}
 			}
 			template.AcceptInput("ForceSpawn", "", null, null)
 		}

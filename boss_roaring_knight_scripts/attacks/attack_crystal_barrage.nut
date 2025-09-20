@@ -77,7 +77,7 @@ function Start_crystal_barrage(duration, interval)
 
 		Schedule(0.5, function(){
 			ReverseStarTrains("r_knight_star_train*", "sprite_star_projectile*")
-			CreateStarChildren("r_knight_star_train_a*", true)
+			CreateStarChildren("r_knight_star_train_a*")
 		})
 
 		Schedule(duration, function(){
@@ -122,18 +122,17 @@ function Spawn_star_trains(max_time = null, interval = 0.18)
 		if ((max_time != null && (Time() - start_time) >= max_time)) return
 
 		local possible_indices = []
-		for (local i = 0; i < letters.len(); i++) {
-			if (recent_indices.find(i) == null) {
+		for (local i = 0; i < letters.len(); i++)
+		{
+			if (recent_indices.find(i) == null)
 				possible_indices.append(i)
-			}
 		}
 
 		local rand_index = possible_indices[RandomInt(0, possible_indices.len() - 1)]
 
 		recent_indices.append(rand_index)
-		if (recent_indices.len() > 10) {
+		if (recent_indices.len() > 10)
 			recent_indices.remove(0)
-		}
 
 		template.ValidateScriptScope()
 		template.GetScriptScope().PreSpawnInstance <- function(entity_class, entity_name) {
@@ -148,7 +147,7 @@ function Spawn_star_trains(max_time = null, interval = 0.18)
 			}
 		}
 		template.GetScriptScope().PostSpawn <- function(entities) {
-			foreach(handle in entities )
+			foreach(handle in entities)
 			{ 
 				NetProps.SetPropBool(handle, "m_bForcePurgeFixedupStrings", true)
 			}
@@ -208,7 +207,7 @@ function ReverseStarTrains(name = null, sprite = null)
 // so I have to spawn the weapon mimics AFTER deleting
 // the other star entities to prevent edict overflow.
 
-function CreateStarChildren(name = null, transparent = true)
+function CreateStarChildren(name = null)
 {
 	local target_name = name
 	if (target_name == null) return
@@ -233,28 +232,20 @@ function CreateStarChildren(name = null, transparent = true)
 			train_star.Destroy()
 		}
 
-		// Schedule(0.1, function() {
-			foreach(origin in train_origins)
-			{
-				scope.PreSpawnInstance <- function(entity_class, entity_name) {
-					local modelOverride = "models/czechmate/roaring_knight/projectile/projectile_star_child_trans.mdl"
-					if (transparent == false)
-					{
-						modelOverride = "models/czechmate/roaring_knight/projectile/projectile_star_child.mdl"
+		foreach(origin in train_origins)
+		{
+			scope.PreSpawnInstance <- function(entity_class, entity_name) {
+				return {
+					origin = origin,
 					}
-					return {
-						origin = origin,
-						ModelOverride = modelOverride
-						}
-				}
-				scope.PostSpawn <- function(entities) {
-					foreach(handle in entities)
-						NetProps.SetPropBool(handle, "m_bForcePurgeFixedupStrings", true)
-				}
-				template.AcceptInput("ForceSpawn", "", null, null)
 			}
+			scope.PostSpawn <- function(entities) {
+				foreach(handle in entities)
+					NetProps.SetPropBool(handle, "m_bForcePurgeFixedupStrings", true)
+			}
+			template.AcceptInput("ForceSpawn", "", null, null)
+		}
 		EntFire("weapon_mimic_star_child*", "FireOnce", null, 0.0, null)
-		// })
 	})
 
 	Schedule(delay + 0.3, FadeStarChildren)
@@ -275,8 +266,8 @@ function FadeStarChildren()
 		weapon_mimic_star_kid.AddEFlags(1048576)
 		NetProps.SetPropBool(weapon_mimic_star_kid, "m_bForcePurgeFixedupStrings", true)
 
-		Schedule(1.5, Entity_fade_out, [weapon_mimic_star_kid, 0.5])
-		Schedule(2.0, function(weapon_mimic_star_kid) {
+		Schedule(2.0, Entity_fade_out, [weapon_mimic_star_kid, 0.5])
+		Schedule(2.5, function(weapon_mimic_star_kid) {
 			if(weapon_mimic_star_kid == null) return
 			if(!weapon_mimic_star_kid.IsValid()) return
 			EntFireByHandle(weapon_mimic_star_kid, "Kill", "", 0.0, null, null)

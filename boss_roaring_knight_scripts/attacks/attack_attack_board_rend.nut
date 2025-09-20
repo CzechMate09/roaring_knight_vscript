@@ -13,11 +13,10 @@ function attack_board_rend(slash_amount)
 	SetTextureFrameIndex(brush_r_knight_attack, 0)
 	Stop_r_knight_door_parent()
 
-	if (attack_board_rend_toggle) {
+	if (attack_board_rend_toggle)
 		SetTextureFrameIndex(brush_r_knight_attack, 2)
-	} else {
+	else
 		SetTextureFrameIndex(brush_r_knight_attack, 5)
-	}
 
 	function do_slash(i)
 	{
@@ -33,7 +32,9 @@ function attack_board_rend(slash_amount)
 		{
 			Schedule(delay + 0.3, SetTextureFrameIndex, [brush_r_knight_attack, 4])
 			Schedule(delay + 0.7, SetTextureFrameIndex, [brush_r_knight_attack, 5])
-		} else {
+		}
+		else
+		{
 			Schedule(delay + 0.3, SetTextureFrameIndex, [brush_r_knight_attack, 1])
 			Schedule(delay + 0.7, SetTextureFrameIndex, [brush_r_knight_attack, 2])
 		}
@@ -47,38 +48,37 @@ function attack_board_rend(slash_amount)
 		{
 			//  function handle_slash( string brush_name, array weapon_mimics, array weapon_delays, function slash_func, float delay)
 			case 0:
-				handle_slash("brush_slash_hor", ["weapon_mimic_tooth_hor", "weapon_mimic_tooth_hor_2"], [0.3, 0.5], slash_horizontal, delay)
+				handle_slash("brush_slash_hor", "brush_slash_bottom_hor", ["weapon_mimic_tooth_hor", "weapon_mimic_tooth_hor_2"], [0.3, 0.5], slash_horizontal, delay)
 				break
 			case 1:
-				handle_slash("brush_slash_ver", ["weapon_mimic_tooth_ver", "weapon_mimic_tooth_ver_2"], [0.3, 0.5], slash_vertical, delay)
+				handle_slash("brush_slash_ver", "brush_slash_bottom_ver", ["weapon_mimic_tooth_ver", "weapon_mimic_tooth_ver_2"], [0.3, 0.5], slash_vertical, delay)
 				break
 			case 2:
-				handle_slash("brush_slash_side_1", ["weapon_mimic_tooth_side"], [0.3], slash_side_1, delay)
+				handle_slash("brush_slash_side_1", "brush_slash_bottom_side_1", ["weapon_mimic_tooth_side"], [0.3], slash_side_1, delay)
 				break
 			case 3:
-				handle_slash( "brush_slash_side_2", ["weapon_mimic_tooth_side"], [0.3], slash_side_2, delay)
+				handle_slash( "brush_slash_side_2", "brush_slash_bottom_side_2", ["weapon_mimic_tooth_side"], [0.3], slash_side_2, delay)
 				break
 			default:
 				ClientPrint(null, HUD_PRINTTALK, "[DEBUG] ERROR: RandomInt() function broke?")
 		}
 
 		if (i + 1 < slash_amount)
-		{
 			Schedule(delay + 3.0, do_slash, [i + 1])
-		} else {
+		else
 			Schedule(3.0, R_knight_rand_attack)
-		}
 	}
 
 	do_slash(0)
 }
 
-function handle_slash(brush_name, weapon_mimics, weapon_delays, slash_func, delay) 
+function handle_slash(brush_name, brush_name_bottom, weapon_mimics, weapon_delays, slash_func, delay) 
 {
 	local brush = Entities.FindByName(null, brush_name)
-	brush.AcceptInput("Enable", "", null, null)
-	brush.AcceptInput("Color", "255 0 0", null, null)
-	EntFireByHandle(brush, "Color", "255 255 255", delay, null, null)
+	local brush_bottom = Entities.FindByName(null, brush_name_bottom)
+	brush_bottom.AcceptInput("Enable", "", null, null)
+	EntFireByHandle(brush_bottom, "Disable", "", delay, null, null)
+	EntFireByHandle(brush, "Enable", "", delay, null, null)
 	EntFireByHandle(brush, "Disable", "", delay + 0.3, null, null)
 
 	Schedule(delay + 0.3, slash_func)
@@ -86,9 +86,9 @@ function handle_slash(brush_name, weapon_mimics, weapon_delays, slash_func, dela
 		PlaySoundOnAllClients("chapter_3/audiogroup_default/snd_knight_boxbreak.wav", 1.0, 110)
 		PlaySoundOnAllClients("chapter_3/audiogroup_default/snd_chargeshot_fire.wav")
 	})
-	for (local i = 0; i < weapon_mimics.len(); i++) {
+
+	for (local i = 0; i < weapon_mimics.len(); i++)
 		EntFire(weapon_mimics[i], "FireOnce", "", delay + weapon_delays[i], null)
-	}
 }
 
 function inicialize_board_rend()

@@ -108,9 +108,7 @@ function Sword_slash_spawn(slash_count, delay, on_complete = null)
 	}
 
 	for (local i = 0; i < slash_count; i++)
-	{
 		Schedule(i * delay, spawn_at_random_path)
-	}
 
 	if (on_complete != null)
 		Schedule(slash_count * delay, on_complete)
